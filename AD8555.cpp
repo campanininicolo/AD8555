@@ -60,12 +60,14 @@ void AD8555::sendData(uint8_t mode, uint8_t func, uint8_t value)
 
 void AD8555::program()
 {
-    uint8_t parity;
+    	uint8_t parity;
+	uint8_t parity_counter = 0;
 
 	for (uint8_t i = 0; i < 8; i++) {
 		if ((SSG >> i) & 1) {
 			parity = (1 << i);
 			blowSSGFuse(parity);
+			parity_counter ++;
 		}
 	}
 
@@ -73,6 +75,7 @@ void AD8555::program()
 		if ((FSG >> i) & 1) {
 			parity = (1 << i);
 			blowFSGFuse(parity);
+			parity_counter ++;
 		}
 	}
 
@@ -80,7 +83,12 @@ void AD8555::program()
 		if ((OFS >> i) & 1) {
 			parity = (1 << i);
 			blowOFSFuse(parity);
+			parity_counter ++;
 		}
+	}
+	
+	if ((parity_counter % 2) == 1){
+		blowParityFuse();
 	}
 
 	blowMSF();
@@ -101,6 +109,12 @@ void AD8555::blowFSGFuse(uint8_t Value)
 void AD8555::blowOFSFuse(uint8_t Value)
 {
     sendData(FUNC_PROGRAM, PAR_OFS_CODE, Value);
+    delayMicroseconds(1100);
+}
+
+void AD8555::blowParityFuse()
+{
+	sendData(FUNC_PROGRAM, PAR_OTHER_FUNC, 0b100);
     delayMicroseconds(1100);
 }
 
