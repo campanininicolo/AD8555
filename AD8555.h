@@ -31,6 +31,7 @@ class AD8555
 		void blowSSGFuse(uint8_t Value);
 		void blowFSGFuse(uint8_t Value);
 		void blowOFSFuse(uint8_t Value);
+		void blowParityFuse();
 		void blowMSF();
 		void sendStart();
 		void sendMode(uint8_t value);
